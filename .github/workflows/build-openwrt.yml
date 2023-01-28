@@ -61,6 +61,7 @@ jobs:
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
+    # 开启缓存加速编译
     - name: Cache
       uses: klever1988/cachewrtbuild@main
       with:
