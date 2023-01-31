@@ -11,9 +11,9 @@
 name: Build Netgear R6220 Images form OpenWrt
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   repository_dispatch:
   workflow_dispatch:
     # inputs:
