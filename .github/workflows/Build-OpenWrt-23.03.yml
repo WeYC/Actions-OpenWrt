@@ -27,8 +27,8 @@ env:
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: openwrt-23.03.config
-  DIY_P1_SH: diy-part03.sh
-  DIY_P2_SH: diy-part04.sh
+  DIY_P1_SH: diy-part-22-03.01
+  DIY_P2_SH: diy-part-22-03.00
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
@@ -63,13 +63,6 @@ jobs:
           df -hT $PWD
           git clone $REPO_URL -b $REPO_BRANCH openwrt
           ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
-
-      # 开启缓存加速编译
-      - name: Cache
-        uses: klever1988/cachewrtbuild@main
-        with:
-          ccache: "true"
-          prefix: ${{ github.workspace }}/openwrt
 
       - name: Load custom feeds
         run: |
