@@ -14,7 +14,7 @@
 # sed -i 's/192.168.1.1/192.168.50.5/g' package/base-files/files/bin/config_generate
 
 # 修改主机名字
-# sed -i 's/OpenWrt/R6220/g' package/base-files/files/bin/config_generate
+sed -i 's/OpenWrt/R6220/g' package/base-files/files/bin/config_generate
 
 # 更改内核版本
 # sed -i 's/KERNEL_PATCHVER:=5.4/KERNEL_PATCHVER:=5.10/g' target/linux/ramips/Makefile
