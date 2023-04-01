@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Delete old workflow:
+  del_runs:
     runs-on: ubuntu-latest
     steps:
       - name: Delete workflow runs
