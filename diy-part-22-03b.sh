@@ -26,5 +26,5 @@ sed -i 's/OpenWrt/R6220/g' package/base-files/files/bin/config_generate
 # sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' package/lean/default-settings/files/zzz-default-settings
 
 # 添加WiFi参数
-# sed -i '/disabled=1/disabled=0/' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i 's/disabled=1/disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 # sed -i '/set wireless.radio${devidx}.disabled=0/a\set wireless.radio${devidx}.country=US'
