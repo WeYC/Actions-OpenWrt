@@ -30,4 +30,4 @@ sed -i 's/disabled=1/disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac802
 sed -i '/set wireless.radio${devidx}.disabled=0/a\set wireless.radio${devidx}.country=US' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # 修改target.mk
-sed -i '/DEFAULT_PACKAGES.router:=\\/a\luci-app-upnp luci-app-nlbwmon luci-app-turboacc curl ca-certificates block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw kmod-tun iptables-mod-tproxy iptables-mod-extra ipset ip-full default-settings luci luci-newapi luci-app-ddns ddns-scripts_aliyun ddns-scripts_dnspod \\' include/target.mk
+# sed -i '/DEFAULT_PACKAGES.router:=\\/a\luci-app-upnp luci-app-nlbwmon luci-app-turboacc curl ca-certificates block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw kmod-tun iptables-mod-tproxy iptables-mod-extra ipset ip-full default-settings luci luci-newapi luci-app-ddns ddns-scripts_aliyun ddns-scripts_dnspod \\' include/target.mk
