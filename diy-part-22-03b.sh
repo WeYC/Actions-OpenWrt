@@ -16,6 +16,9 @@
 # 修改主机名字
 sed -i 's/OpenWrt/NETGEAR R6220/g' package/base-files/files/bin/config_generate
 
+# 修改WiFI名
+sed -i 's/ssid=OpenWrt/ssid=NETGEAR_R6220/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+
 # 更改内核版本
 # sed -i 's/KERNEL_PATCHVER:=5.4/KERNEL_PATCHVER:=5.10/g' target/linux/ramips/Makefile
 
@@ -30,7 +33,7 @@ sed -i 's/disabled=1/disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac802
 sed -i '/set wireless.radio${devidx}.disabled=0/a\set wireless.radio${devidx}.country=CN' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # 修改镜像大小
-sed -i 's/28672k/43008k/g' target/linux/ramips/image/mt7621.mk
+# sed -i 's/28672k/43008k/g' target/linux/ramips/image/mt7621.mk
 
 # 修改target.mk
 # sed -i '/DEFAULT_PACKAGES.router:=\\/a\luci-app-upnp luci-app-nlbwmon luci-app-turboacc curl ca-certificates block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw kmod-tun iptables-mod-tproxy iptables-mod-extra ipset ip-full default-settings luci luci-newapi luci-app-ddns ddns-scripts_aliyun ddns-scripts_dnspod \\' include/target.mk
