@@ -25,7 +25,7 @@ on:
           - disabled_inactivity
           - disabled_manually
       delete_run_by_conclusion_pattern:
-        description: '按结论删除工作流：需要采取的行动、已取消、失败、已跳过、成功'
+        description: '按结果删除工作流：需要采取的行动、已取消、失败、已跳过、成功'
         required: true
         default: "All"
         type: choice
