@@ -16,21 +16,12 @@ on:
       - main
   repository_dispatch:
   workflow_dispatch:
-    input:
-      options:
-        description: "选择配置"
-        required: true
-        default: .config
-        type: choice
-        options:
-          - .config
-          - b.config
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: ${{ github.event.inputs.options }}
+  CONFIG_FILE: b.config
   DIY_P1_SH: diy-part01.sh
   DIY_P2_SH: diy-part02.sh
   UPLOAD_BIN_DIR: false
