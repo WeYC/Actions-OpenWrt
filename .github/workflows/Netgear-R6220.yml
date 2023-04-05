@@ -11,9 +11,9 @@
 name: Netgear R6220
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   repository_dispatch:
   workflow_dispatch:
 
