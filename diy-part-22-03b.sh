@@ -13,6 +13,13 @@
 # Modify default IP
 # sed -i 's/192.168.1.1/192.168.50.5/g' package/base-files/files/bin/config_generate
 
+# 修改 NTP 服务器
+sed -i "s/server='0.openwrt.pool.ntp.org'/server='ntp.aliyun.com'/g" package/base-files/files/bin/config_generate
+sed -i "s/server='1.openwrt.pool.ntp.org'/server='time1.cloud.tencent.com'/g" package/base-files/files/bin/config_generate
+sed -i "s/server='2.openwrt.pool.ntp.org'/server='time.ustc.edu.cn'/g" package/base-files/files/bin/config_generate
+sed -i "s/server='3.openwrt.pool.ntp.org'/server='cn.pool.ntp.org'/g" package/base-files/files/bin/config_generate
+
+
 # 修改主机名字
 # sed -i 's/OpenWrt/NETGEAR_R6220/g' package/base-files/files/bin/config_generate
 
@@ -30,10 +37,4 @@ sed -i 's/ssid=OpenWrt/ssid=NETGEAR_R6220/g' package/kernel/mac80211/files/lib/w
 
 # 添加WiFi参数
 sed -i 's/disabled=1/disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i '/set wireless.radio${devidx}.disabled=0/a\set wireless.radio${devidx}.country=CN' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-
-# 修改镜像大小
-# sed -i 's/28672k/43008k/g' target/linux/ramips/image/mt7621.mk
-
-# 修改target.mk
-# sed -i '/DEFAULT_PACKAGES.router:=\\/a\luci-app-upnp luci-app-nlbwmon luci-app-turboacc curl ca-certificates block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw kmod-tun iptables-mod-tproxy iptables-mod-extra ipset ip-full default-settings luci luci-newapi luci-app-ddns ddns-scripts_aliyun ddns-scripts_dnspod \\' include/target.mk
+sed -i '/set wireless.radio${devidx}.disabled=0/a\set wireless.radio${devidx}.country=CN' package/kernel/mac80211/files/lib/wifi/mac80211.s
