@@ -26,6 +26,10 @@ sed -i "s/server='3.openwrt.pool.ntp.org'/server='cn.pool.ntp.org'/g" package/ba
 # 修改WiFI名
 sed -i 's/ssid=OpenWrt/ssid=NETGEAR_R6220/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
+# 添加WiFi参数
+sed -i 's/disabled=1/disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i '/set wireless.radio${devidx}.disabled=0/a\set wireless.radio${devidx}.country=CN' package/kernel/mac80211/files/lib/wifi/mac80211.s
+
 # 更改内核版本
 # sed -i 's/KERNEL_PATCHVER:=5.4/KERNEL_PATCHVER:=5.10/g' target/linux/ramips/Makefile
 
@@ -34,7 +38,3 @@ sed -i 's/ssid=OpenWrt/ssid=NETGEAR_R6220/g' package/kernel/mac80211/files/lib/w
 
 # 设置密码为空（安装固件时无需密码登陆，然后自己修改想要的密码）
 # sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' package/lean/default-settings/files/zzz-default-settings
-
-# 添加WiFi参数
-sed -i 's/disabled=1/disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i '/set wireless.radio${devidx}.disabled=0/a\set wireless.radio${devidx}.country=CN' package/kernel/mac80211/files/lib/wifi/mac80211.s
