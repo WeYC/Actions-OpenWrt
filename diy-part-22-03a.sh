@@ -21,3 +21,4 @@
 # echo 'src-git-full lean_luci https://github.com/coolsnowwolf/luci.git;master' >> feeds.conf.default
 # echo 'src-git-full kenzo https://github.com/kenzok8/openwrt-packages;master' >> feeds.conf.default
 # echo 'src-git-full small https://github.com/kenzok8/small;master' >> feeds.conf.default
+git clone https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
