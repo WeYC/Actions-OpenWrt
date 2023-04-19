@@ -22,4 +22,5 @@
 # echo 'src-git-full kenzo https://github.com/kenzok8/openwrt-packages;master' >> feeds.conf.default
 # echo 'src-git-full small https://github.com/kenzok8/small;master' >> feeds.conf.default
 # git clone https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
-echo 'src-git-full kiddin9 https://github.com/kiddin9/openwrt-packages.git;master' >> feeds.conf.default
+# echo 'src-git-full kiddin9 https://github.com/kiddin9/openwrt-packages.git;master' >> feeds.conf.default
+echo 'src-git-full haibo https://github.com/haiibo/openwrt-packages' >> feeds.conf.default
