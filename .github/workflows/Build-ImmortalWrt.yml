@@ -26,9 +26,9 @@ env:
   REPO_URL: https://github.com/immortalwrt/immortalwrt.git
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: immortalwrt.config
-  DIY_P1_SH: immortalwrt_a.sh
-  DIY_P2_SH: immortalwrt_b.sh
+  CONFIG_FILE: ImmortalWrtimmortalwrt.config
+  DIY_P1_SH: ImmortalWrt/immortalwrt_a.sh
+  DIY_P2_SH: ImmortalWrtimmortalwrt_b.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
