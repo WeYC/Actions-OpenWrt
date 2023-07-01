@@ -21,8 +21,10 @@ sed -i "s/server='3.openwrt.pool.ntp.org'/server='cn.pool.ntp.org'/g" package/ba
 
 
 # 修改主机名字
-# sed -i 's/OpenWrt/NETGEAR_R6220/g' package/base-files/files/bin/config_generate
-# sed -i 's/UTC/Asia/Shanghai/g' package/base-files/files/bin/config_generate
+sed -i 's/OpenWrt/NETGEAR_R6220/g' package/base-files/files/bin/config_generate
+
+# 修改时区
+sed -i 's/UTC/Asia/Shanghai/g' package/base-files/files/bin/config_generate
 
 # 修改WiFI名
 sed -i 's/ssid=OpenWrt/ssid=NETGEAR_R6220/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
