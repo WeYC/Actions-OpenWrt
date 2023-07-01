@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build OpenWrt-23.03
+name: Build OpenWrt-23.05
 
 on:
   # push:
@@ -24,11 +24,11 @@ on:
 
 env:
   REPO_URL: https://github.com/openwrt/openwrt.git
-  REPO_BRANCH: openwrt-22.03
+  REPO_BRANCH: openwrt-22.05
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: OpenWrt/openwrt-22.03.config
-  DIY_P1_SH: OpenWrt/diy-part-22-03a.sh
-  DIY_P2_SH: OpenWrt/diy-part-22-03b.sh
+  CONFIG_FILE: OpenWrt/openwrt-22.05.config
+  DIY_P1_SH: OpenWrt/diy-part-22-05a.sh
+  DIY_P2_SH: OpenWrt/diy-part-22-05b.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
