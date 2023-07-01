@@ -11,7 +11,7 @@
 #
 
 # 切换分支
-# git checkout 94adc23
+git checkout 863f769
 
 # Uncomment a feed source
 #sed -i 's/^#\(.*helloworld\)/\1/' feeds.conf.default
