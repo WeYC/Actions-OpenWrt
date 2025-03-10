@@ -20,7 +20,9 @@
 #sed -i 's/OpenWrt/P3TERX-Router/g' package/base-files/files/bin/config_generate
 
 # Apply MediaTek OpenWrt files and patches
+cp -af ./feeds/mtk_openwrt_feed/21.02/files/* .
 cp -af ./feeds/mtk_openwrt_feed/24.10/files/* .
 cp -af ./feeds/mtk_openwrt_feed/tools .
+for file in $(find ./feeds/mtk_openwrt_feed/21.02/patches-base -name "*.patch" | sort); do patch -f -p1 -i ${file}; done
+for file in $(find ./feeds/mtk_openwrt_feed/21.02/patches-feeds -name "*.patch" | sort); do patch -f -p1 -i ${file}; done
 for file in $(find ./feeds/mtk_openwrt_feed/24.10/patches-base -name "*.patch" | sort); do patch -f -p1 -i ${file}; done
-for file in $(find ./feeds/mtk_openwrt_feed/24.10/patches-feeds -name "*.patch" | sort); do patch -f -p1 -i ${file}; done
