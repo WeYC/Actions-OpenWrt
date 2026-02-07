@@ -22,9 +22,14 @@ jobs:
         fetch-depth: 0
 
     # 2️⃣ 安装官方 ImmortalWrt 构建环境（解决 python3-distutils 问题）
-    - name: Install ImmortalWrt build environment
+    - name: Install build dependencies
       run: |
-        bash <(curl -s https://build-scripts.immortalwrt.org/init_build_environment.sh)
+        sudo apt update
+        sudo apt install -y \
+        build-essential libncurses5-dev gawk git subversion \
+        python3 python3-venv python3-pip python3-setuptools python3-distutils-extra \
+        libssl-dev zlib1g-dev ccache unzip time rsync wget curl
+
 
     # 3️⃣ Clone ImmortalWrt 源码指定 tag
     - name: Clone ImmortalWrt
