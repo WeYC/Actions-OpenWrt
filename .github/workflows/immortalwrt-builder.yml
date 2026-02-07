@@ -1,10 +1,10 @@
-name: Build ImmortalWrt R6220 with Docker
+name: Build ImmortalWrt R6220
 
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag to build'
+        description: 'ImmortalWrt tag to build'
         required: true
         default: 'v24.10.4'
 
@@ -21,52 +21,60 @@ jobs:
       with:
         fetch-depth: 0
 
-    # 2️⃣ Pull official ImmortalWrt Docker image
-    - name: Pull Docker build environment
+    # 2️⃣ 安装官方构建环境（解决 python3-distutils 和依赖问题）
+    - name: Install ImmortalWrt build environment
       run: |
-        docker pull immortalwrt/build-env:latest
+        bash <(curl -s https://build-scripts.immortalwrt.org/init_build_environment.sh)
 
-    # 3️⃣ Build inside Docker
-    - name: Build firmware in Docker
+    # 3️⃣ Clone ImmortalWrt 源码
+    - name: Clone ImmortalWrt
       run: |
-        docker run --rm -v $PWD:/build -w /build immortalwrt/build-env:latest /bin/bash -c "
-          set -e
-          # Clone ImmortalWrt
-          git clone --branch $TAG --depth 1 https://github.com/immortalwrt/immortalwrt.git immortalwrt
-          cd immortalwrt
+        git clone --branch $TAG --depth 1 https://github.com/immortalwrt/immortalwrt.git immortalwrt
 
-          # 修改 R6220 DTS 扩展 overlay
-          cd target/linux/ramips/dts
-          sed -i '/partition@500000 {/,/};/ s/<0x500000 0x01c00000>/<0x500000 0x05800000>/' mt7621_netgear_r6220.dts
-          sed -i '/partition@2100000 {/,/};/d' mt7621_netgear_r6220.dts
-          cd ../../../..
+    # 4️⃣ 修改 R6220 DTS 扩展 overlay
+    - name: Modify DTS for R6220 overlay
+      run: |
+        cd immortalwrt/target/linux/ramips/dts
+        # 扩大 rootfs/overlay，把 reserved 并入
+        sed -i '/partition@500000 {/,/};/ s/<0x500000 0x01c00000>/<0x500000 0x05800000>/' mt7621_netgear_r6220.dts
+        sed -i '/partition@2100000 {/,/};/d' mt7621_netgear_r6220.dts
+        cd ../../../..
 
-          # 更新 feeds
-          cd immortalwrt
-          ./scripts/feeds update -a
-          ./scripts/feeds install -a
+    # 5️⃣ 更新 feeds
+    - name: Update feeds
+      run: |
+        cd immortalwrt
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
 
-          # 设置默认 target R6220 + 默认软件包
-          make defconfig
-          echo 'CONFIG_TARGET_ramips=y' >> .config
-          echo 'CONFIG_TARGET_ramips_mt7621=y' >> .config
-          echo 'CONFIG_TARGET_ramips_mt7621_DEVICE_netgear_r6220=y' >> .config
-          echo 'CONFIG_PACKAGE_luci-app-upnp=y' >> .config
-          echo 'CONFIG_PACKAGE_luci-i18n-base-zh-cn=y' >> .config
-          echo 'CONFIG_PACKAGE_luci-i18n-upnp-zh-cn=y' >> .config
-          make defconfig
+    # 6️⃣ 配置默认 target + 默认软件包
+    - name: Set default config for R6220 with packages
+      run: |
+        cd immortalwrt
+        make defconfig
+        # 设置 R6220 target
+        echo "CONFIG_TARGET_ramips=y" >> .config
+        echo "CONFIG_TARGET_ramips_mt7621=y" >> .config
+        echo "CONFIG_TARGET_ramips_mt7621_DEVICE_netgear_r6220=y" >> .config
+        # 默认软件包：UPnP + 中文包
+        echo "CONFIG_PACKAGE_luci-app-upnp=y" >> .config
+        echo "CONFIG_PACKAGE_luci-i18n-base-zh-cn=y" >> .config
+        echo "CONFIG_PACKAGE_luci-i18n-upnp-zh-cn=y" >> .config
+        make defconfig
 
-          # 编译固件
-          make -j$(nproc) V=s
-        "
+    # 7️⃣ 编译固件
+    - name: Compile firmware
+      run: |
+        cd immortalwrt
+        make -j$(nproc) V=s
 
-    # 4️⃣ 准备 Release 目录
+    # 8️⃣ 准备 Release 目录
     - name: Prepare artifacts
       run: |
         mkdir -p release
-        cp -r immortalwrt/bin/targets/ramips/mt7621/*-r6220*.bin release/
+        cp immortalwrt/bin/targets/ramips/mt7621/*-r6220*.bin release/
 
-    # 5️⃣ 创建 GitHub Release
+    # 9️⃣ 创建 GitHub Release
     - name: Create GitHub Release
       id: create_release
       uses: softprops/action-gh-release@v1
@@ -77,7 +85,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-    # 6️⃣ 上传 Release 固件
+    # 🔟 上传固件到 Release
     - name: Upload Release Assets
       uses: softprops/action-gh-release@v1
       with:
