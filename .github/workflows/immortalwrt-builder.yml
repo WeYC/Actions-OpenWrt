@@ -1,5 +1,4 @@
-
-name: Build ImmortalWrt R6220 Full
+name: Build ImmortalWrt R6220 with Docker
 
 on:
   workflow_dispatch:
@@ -16,73 +15,58 @@ jobs:
       TAG: ${{ github.event.inputs.tag }}
 
     steps:
+    # 1️⃣ Checkout repository
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    # 使用 ImmortalWrt 官方脚本安装编译环境
-    - name: Install build dependencies
+    # 2️⃣ Pull official ImmortalWrt Docker image
+    - name: Pull Docker build environment
       run: |
-        sudo apt update
-        sudo apt install -y \
-          binutils bzip2 diff find flex gawk \
-          gcc-6+ getopt grep install libc-dev libz-dev \
-          make4.1+ perl python3.7+ rsync subversion unzip which
+        docker pull immortalwrt/build-env:latest
 
-
-    # Clone ImmortalWrt 源码指定 tag
-    - name: Clone ImmortalWrt
+    # 3️⃣ Build inside Docker
+    - name: Build firmware in Docker
       run: |
-        git clone --branch $TAG --depth 1 https://github.com/immortalwrt/immortalwrt.git immortalwrt
+        docker run --rm -v $PWD:/build -w /build immortalwrt/build-env:latest /bin/bash -c "
+          set -e
+          # Clone ImmortalWrt
+          git clone --branch $TAG --depth 1 https://github.com/immortalwrt/immortalwrt.git immortalwrt
+          cd immortalwrt
 
-    # 修改 DTS 扩大 overlay
-    - name: Modify DTS for R6220 overlay
-      run: |
-        cd immortalwrt/target/linux/ramips/dts
-        # 扩大 rootfs/overlay 卷，把 reserved 并入
-        sed -i '/partition@500000 {/,/};/ s/<0x500000 0x01c00000>/<0x500000 0x05800000>/' mt7621_netgear_r6220.dts
-        sed -i '/partition@2100000 {/,/};/d' mt7621_netgear_r6220.dts
-        cd ../../../..
+          # 修改 R6220 DTS 扩展 overlay
+          cd target/linux/ramips/dts
+          sed -i '/partition@500000 {/,/};/ s/<0x500000 0x01c00000>/<0x500000 0x05800000>/' mt7621_netgear_r6220.dts
+          sed -i '/partition@2100000 {/,/};/d' mt7621_netgear_r6220.dts
+          cd ../../../..
 
-    # 更新 feeds
-    - name: Update feeds
-      run: |
-        cd immortalwrt
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
+          # 更新 feeds
+          cd immortalwrt
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
 
-    # 设置默认 target R6220 + 默认软件包
-    - name: Set default config for R6220 with packages
-      run: |
-        cd immortalwrt
-        # 基础配置
-        make defconfig
-        # 选择 R6220 target
-        echo "CONFIG_TARGET_ramips=y" >> .config
-        echo "CONFIG_TARGET_ramips_mt7621=y" >> .config
-        echo "CONFIG_TARGET_ramips_mt7621_DEVICE_netgear_r6220=y" >> .config
-        # 默认软件包：UPnP + 汉化
-        echo "CONFIG_PACKAGE_luci-app-upnp=y" >> .config
-        echo "CONFIG_PACKAGE_luci-i18n-base-zh-cn=y" >> .config
-        echo "CONFIG_PACKAGE_luci-i18n-upnp-zh-cn=y" >> .config
-        # 更新配置
-        make defconfig
+          # 设置默认 target R6220 + 默认软件包
+          make defconfig
+          echo 'CONFIG_TARGET_ramips=y' >> .config
+          echo 'CONFIG_TARGET_ramips_mt7621=y' >> .config
+          echo 'CONFIG_TARGET_ramips_mt7621_DEVICE_netgear_r6220=y' >> .config
+          echo 'CONFIG_PACKAGE_luci-app-upnp=y' >> .config
+          echo 'CONFIG_PACKAGE_luci-i18n-base-zh-cn=y' >> .config
+          echo 'CONFIG_PACKAGE_luci-i18n-upnp-zh-cn=y' >> .config
+          make defconfig
 
-    # 编译固件
-    - name: Compile firmware
-      run: |
-        cd immortalwrt
-        make -j$(nproc) V=s
+          # 编译固件
+          make -j$(nproc) V=s
+        "
 
-    # 准备 Release 目录
+    # 4️⃣ 准备 Release 目录
     - name: Prepare artifacts
       run: |
-        cd immortalwrt/bin/targets/ramips/mt7621
         mkdir -p release
-        cp -r * release/
+        cp -r immortalwrt/bin/targets/ramips/mt7621/*-r6220*.bin release/
 
-    # 创建 GitHub Release
+    # 5️⃣ 创建 GitHub Release
     - name: Create GitHub Release
       id: create_release
       uses: softprops/action-gh-release@v1
@@ -93,10 +77,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-    # 上传固件到 Release
+    # 6️⃣ 上传 Release 固件
     - name: Upload Release Assets
       uses: softprops/action-gh-release@v1
       with:
-        files: immortalwrt/bin/targets/ramips/mt7621/release/**/*-r6220*.bin
+        files: release/*.bin
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
