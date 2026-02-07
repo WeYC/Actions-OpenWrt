@@ -24,7 +24,7 @@ jobs:
     # 2️⃣ 安装官方构建环境（解决 python3-distutils 和依赖问题）
     - name: Install ImmortalWrt build environment
       run: |
-        bash <(curl -s https://build-scripts.immortalwrt.org/init_build_environment.sh)
+        sudo bash -c 'bash <(curl -s https://build-scripts.immortalwrt.org/init_build_environment.sh)'
 
     # 3️⃣ Clone ImmortalWrt 源码
     - name: Clone ImmortalWrt
