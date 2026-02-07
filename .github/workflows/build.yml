@@ -1,0 +1,67 @@
+name: Build and Release ImmortalWrt
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build'
+        required: true
+        default: 'v24.10.4'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event.inputs.tag }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y build-essential libncurses5-dev gawk git subversion python3 python3-distutils \
+          libssl-dev zlib1g-dev ccache unzip time rsync wget curl
+
+    - name: Clone ImmortalWrt
+      run: |
+        git clone --branch $TAG --depth 1 https://github.com/immortalwrt/immortalwrt.git immortalwrt
+        cd immortalwrt
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+
+    - name: Set up build environment
+      run: |
+        cd immortalwrt
+        make defconfig
+
+    - name: Compile firmware
+      run: |
+        cd immortalwrt
+        make -j$(nproc) V=s
+
+    - name: Prepare artifacts
+      run: |
+        cd immortalwrt/bin/targets
+        mkdir -p release
+        cp -r * release/
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ env.TAG }}
+        name: "ImmortalWrt ${{ env.TAG }}"
+        body: "Automated build of ImmortalWrt ${{ env.TAG }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+    - name: Upload Release Assets
+      uses: softprops/action-gh-release@v1
+      with:
+        files: immortalwrt/bin/targets/release/**/*-*.bin
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
